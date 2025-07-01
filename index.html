@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartDeploy CI/CD Pipeline Project</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      color: #212529;
+    }
+
+    header {
+      background: #003366;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .container {
+      margin-left: 8%;
+      margin-right: 8%;
+    }
+
+    section {
+      padding: 2rem 0;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    h2 {
+      color: #003366;
+    }
+
+    pre {
+      background-color: #e9ecef;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    code {
+      font-family: monospace;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 1.2rem;
+    }
+
+    ul li::before {
+      content: "✅";
+      margin-right: 0.5rem;
+      color: green;
+    }
+
+    .code-block {
+      background: #f1f3f5;
+      padding: 1rem;
+      border-left: 5px solid #003366;
+      overflow-x: auto;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #003366;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #003366;
+      color: white;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚀 SmartDeploy: Jenkins-Driven CI/CD with GitHub and AWS CodeDeploy</h1>
+  <p>Automating source-to-staging with GitHub, Jenkins, and AWS</p>
+</header>
+
+<div class="container">
+
+  <section>
+    <p>
+      SmartDeploy is a scalable, four-stage CI/CD pipeline that automates the journey from source code to a live staging environment.
+      Designed to bridge modern code repositories, proven build tools, and robust cloud deployment, it orchestrates the full software
+      delivery cycle—triggering builds from GitHub, compiling via Jenkins, and deploying seamlessly with AWS CodeDeploy.
+    </p>
+  </section>
+
+  <section>
+    <h2>🎯 Project Objective</h2>
+    <p>To streamline the software development lifecycle through an efficient, automated delivery pipeline tailored for:</p>
+    <ul>
+      <li>Fast iteration</li>
+      <li>Consistent deployments</li>
+      <li>Scalable testing environments</li>
+    </ul>
+    <p>This project eliminates manual steps, reduces deployment errors, and allows developers to focus on building, testing, and delivering features with confidence.</p>
+  </section>
+
+  <section>
+    <h2>⚙️ Architecture Overview</h2>
+    <p><span class="highlight">[GitHub]</span> → <span class="highlight">[Jenkins Build Server]</span> → <span class="highlight">[Artifact Output]</span> → <span class="highlight">[AWS S3 (optional)]</span> → <span class="highlight">[AWS CodeDeploy]</span> → <span class="highlight">[Staging EC2 Server]</span></p>
+
+    <ul>
+      <li><strong>GitHub (Source Control):</strong> Developers push code to a main branch, triggering a Jenkins build via webhook.</li>
+      <li><strong>Jenkins (Build Automation):</strong> Pulls latest code, runs tests, builds/archives the application.</li>
+      <li><strong>AWS CodeDeploy (Deployment Automation):</strong> Pulls artifacts from Jenkins and deploys to EC2 using lifecycle hooks.</li>
+      <li><strong>Staging EC2 Server:</strong> Target environment for deployment with CodeDeploy agents and IAM roles.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🧩 Key Features</h2>
+    <ul>
+      <li>Four-Stage Automation — Source → Build → Deploy → Validate</li>
+      <li>Jenkins Integration — Customizable build steps, plugin support, centralized control</li>
+      <li>AWS Native Deployment — Uses CodeDeploy for scalable deployments</li>
+      <li>Staging Isolation — QA, testing, and preview safe zone</li>
+      <li>Modular Scripts — Easily extend pipeline logic</li>
+      <li>Production-Ready — Staging structure mimics production</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📐 Use Cases</h2>
+    <ul>
+      <li>Agile Development Teams using trunk-based workflows</li>
+      <li>Startups that prefer open build tools with AWS delivery</li>
+      <li>Projects needing frequent automated testing and deployment</li>
+      <li>Teams needing QA/demo/UAT environments</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🔨 Step-by-Step Pipeline Implementation</h2>
+
+    <h3>Step 1: GitHub — Version Control and Webhook Trigger</h3>
+    <ul>
+      <li>Create a repository and commit your app code.</li>
+      <li>Add a webhook in GitHub that points to your Jenkins server endpoint:
+        <code>http://&lt;jenkins-server&gt;:8080/github-webhook/</code></li>
+    </ul>
+
+    <h3>Step 2: Jenkins — Configure Build Job</h3>
+    <ul>
+      <li>Install Git and CodeDeploy plugins on Jenkins.</li>
+      <li>Create a Freestyle Project or Pipeline Job in Jenkins.</li>
+      <li>Add build steps:
+        <ul>
+          <li>Pull latest code from GitHub.</li>
+          <li>Run unit/integration tests.</li>
+          <li>Build and package the application (e.g., ZIP, JAR, Docker image).</li>
+          <li>Include <code>script.sh</code> for post-deployment steps.</li>
+          <li>Generate and prepare <code>appspec.yml</code>.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><strong>📝 You can use build.sh to automate packaging:</strong></p>
+    <div class="code-block">
+<pre><code>#!/bin/bash
+echo "Running build tasks..."
+npm install
+npm run build
+zip -r my-app.zip .
+</code></pre>
+    </div>
+
+    <h3>Step 3: AWS CodeDeploy — Deployment Configuration</h3>
+    <ul>
+      <li>Set up a CodeDeploy Application and Deployment Group for your staging environment.</li>
+      <li>Define:
+        <ul>
+          <li>EC2 instance tags</li>
+          <li>Deployment strategy (e.g., in-place)</li>
+          <li>Lifecycle hooks using <code>appspec.yml</code></li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="code-block">
+<pre><code>version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/app
+
+hooks:
+  AfterInstall:
+    - location: script.sh
+      timeout: 300
+      runas: ec2-user
+</code></pre>
+    </div>
+
+    <h3>Step 4: Jenkins — Push to CodeDeploy</h3>
+    <p>From Jenkins, use the AWS CLI or plugin to push the build to CodeDeploy:</p>
+    <div class="code-block">
+<pre><code>aws deploy push \
+  --application-name SmartDeployApp \
+  --s3-location s3://my-deploy-bucket/my-app.zip \
+  --source .
+</code></pre>
+    </div>
+
+    <p>Trigger the deployment from Jenkins or using AWS CLI:</p>
+    <div class="code-block">
+<pre><code>aws deploy create-deployment \
+  --application-name SmartDeployApp \
+  --deployment-group-name StagingGroup \
+  --s3-location bucket=my-deploy-bucket,key=my-app.zip,bundleType=zip \
+  --file-exists-behavior OVERWRITE
+</code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>🧪 Testing and Validation</h2>
+    <ul>
+      <li>Jenkins build logs will confirm build success or failure.</li>
+      <li>CodeDeploy logs on EC2 instance (<code>/opt/codedeploy-agent/deployment-root/</code>) will show deployment progress.</li>
+      <li>SSH into staging servers and validate the new version is deployed and running.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📈 Future Upgrade Path</h2>
+    <ul>
+      <li>Adding a production deployment stage after staging approval.</li>
+      <li>Integrating Amazon CodePipeline or GitHub Actions for tighter AWS-native CI/CD.</li>
+      <li>Using Amazon CloudWatch or Datadog for deployment monitoring.</li>
+      <li>Supporting Blue/Green or Canary deployments via CodeDeploy.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>✅ Final Notes</h2>
+    <p><strong>SmartDeploy</strong> demonstrates a powerful and flexible integration of open-source and AWS tools to deliver reliable CI/CD pipelines. It is designed to empower fast-paced development teams while maintaining operational consistency and deployment confidence.</p>
+  </section>
+
+</div>
+
+<footer>
+  &copy; 2025 SmartDeploy Project. Built with ❤️ by George Kirima.
+</footer>
+
+</body>
+</html>
